@@ -28,4 +28,13 @@ module "chatbot_storage" {
   main_vpc_id = module.chatbot_network.vpc_id
   queue_name = "ChatbotStroageQueue"
   queue_dlq_name = "ChatbotStorageDLQ"
+  queue_delay_seconds = 0
+  queue_max_message_size = 2048
+  queue_message_retention_seconds = 604800
+  queue_receive_message_wait_time_seconds = 10
+  queue_redrive_policy_max_receive_count = 3
+  
+  tags = {
+    "environment" = "prod"
+  }
 }
