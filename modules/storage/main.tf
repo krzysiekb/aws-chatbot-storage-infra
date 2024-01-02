@@ -30,10 +30,5 @@ resource "aws_dynamodb_table" "chatbot_storage_messages_table" {
     type = "S"
   }
 
-  attribute {
-    name = "Messages"
-    type = "M"
-  }
-
   tags = var.tags
 }
