@@ -18,4 +18,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: store-message-lambda
-          path: ./lambda/store-medsage/build/main
+          path: lambda/store-message/build/main
