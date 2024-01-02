@@ -129,3 +129,9 @@ resource "aws_lambda_function" "chatbot_storage_messages_lambda" {
   handler = "main"
   filename = var.store_message_lambda_zip_file
 }
+
+resource "aws_lambda_event_source_mapping" "chatbot_storage_messages_lambda_event_source" {
+  event_source_arn = aws_sqs_queue.chtbot_storage_queue.arn
+  function_name = aws_lambda_function.chatbot_storage_messages_lambda.arn
+  starting_position = "LATEST"
+}

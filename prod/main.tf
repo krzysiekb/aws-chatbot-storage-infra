@@ -6,14 +6,6 @@ terraform {
     }
   }
 
-  cloud {
-    organization = "kbanasiak-portfolio"
-
-    workspaces {
-      name = "aws-chatbot-storage"
-    }
-  }
-
   required_version = ">= 1.2.0"
 }
 
