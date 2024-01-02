@@ -38,6 +38,11 @@ variable "queue_redrive_policy_max_receive_count" {
     description = "Max number of times a message can be received"
 }
 
+variable "store_message_lambda_zip_file" {
+    type = string
+    description = "Path to the zip file containing the lambda function"
+}
+
 variable "tags" {
     type = map(string)
     default = {}
