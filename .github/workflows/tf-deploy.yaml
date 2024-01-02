@@ -13,9 +13,9 @@ jobs:
           go-version: 1.21
       - name: Build store-message lambda
         run: |
-          make go-build
+          make go-build && zip 
       - name: Archive store-message lambda
         uses: actions/upload-artifact@v3
         with:
           name: store-message-lambda
-          path: lambda/store-message/build/main
+          path: lambda/store-message/build/main.zip
