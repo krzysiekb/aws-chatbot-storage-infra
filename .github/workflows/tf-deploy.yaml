@@ -62,6 +62,9 @@ jobs:
         working-directory: ./prod
         run: |
           terraform plan
+        env:
+          TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+          TF_VAR_store_message_lambda_zip_file: store-message-lambda.zip
 
       # - name: Upload Configuration
       #   uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
