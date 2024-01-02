@@ -54,6 +54,8 @@ jobs:
         id: plan-upload
         with:
           workspace: ${{ env.TF_WORKSPACE }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          token: ${{ secrets.TF_API_TOKEN }}
           directory: ${{ env.CONFIG_DIRECTORY }}
           speculative: true
 
@@ -62,6 +64,8 @@ jobs:
         id: plan-run
         with:
           workspace: ${{ env.TF_WORKSPACE }}
+          organization: ${{ vars.TF_CLOUD_ORGANIZATION }}
+          token: ${{ secrets.TF_API_TOKEN }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
           plan_only: true
         env:
