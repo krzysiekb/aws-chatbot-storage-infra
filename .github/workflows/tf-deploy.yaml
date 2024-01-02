@@ -43,10 +43,10 @@ jobs:
         with:
           name: store-message-lambda
 
-      - name: AWS authentication
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Upload Configuration
