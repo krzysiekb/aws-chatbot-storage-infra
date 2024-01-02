@@ -1,0 +1,21 @@
+name: tf-deploy
+
+on: [push]
+
+jobs:
+  build-lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+      - name: Build store-message lambda
+        run: |
+          make go-build
+      - name: Archive store-message lambda
+        uses: actions/upload-artifact@v3
+        with:
+          name: store-message-lambda
+          path: ./lambda/store-medsage/build/main
