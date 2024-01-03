@@ -70,4 +70,4 @@ jobs:
           terraform apply -auto-approve
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_store_message_lambda_zip_file: store-message-lambda.zip
+          TF_VAR_store_message_lambda_zip_file: main.zip
