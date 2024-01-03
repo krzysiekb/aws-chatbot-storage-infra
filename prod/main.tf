@@ -6,6 +6,12 @@ terraform {
     }
   }
 
+  backend "s3" {
+    bucket                  = "krzysiekb-terraform-state"
+    key                     = "aws-chatbot-storage-infra"
+    region                  = "us-east-1"
+  }
+
   required_version = ">= 1.2.0"
 }
 
