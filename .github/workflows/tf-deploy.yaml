@@ -41,6 +41,11 @@ jobs:
         with:
           name: store-message-lambda
 
+      - name: Debug store-message lambda artifact
+        run: |
+          pwd
+          ls -al
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
