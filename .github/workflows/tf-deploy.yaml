@@ -63,3 +63,11 @@ jobs:
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
           TF_VAR_store_message_lambda_zip_file: store-message-lambda.zip
+      
+      - name: Terraform Apply
+        working-directory: ./prod
+        run: |
+          terraform apply
+        env:
+          TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+          TF_VAR_store_message_lambda_zip_file: store-message-lambda.zip
