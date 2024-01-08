@@ -94,6 +94,28 @@ resource "aws_iam_policy" "chatbot_storage_messages_lambda_dynamodb_policy" {
   policy      = data.aws_iam_policy_document.chatbot_storage_messages_lambda_dynamodb.json
 }
 
+data "aws_iam_policy_document" "chatbot_storage_messages_lambda_sqs" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:SendMessage",
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:ChangeMessageVisibility",
+      "sqs:GetQueueAttributes",
+    ]
+    resources = [
+      aws_sqs_queue.chtbot_storage_queue.arn,
+    ]
+  }
+}
+
+resource "aws_iam_policy" "chatbot_storage_messages_lambda_sqs_policy" {
+  name        = "ChatbotStorageMessagesLambdaSqsPolicy"
+  description = "Policy for lambda sqs access"
+  policy      = data.aws_iam_policy_document.chatbot_storage_messages_lambda_sqs.json
+}
+
 data "aws_iam_policy_document" "chatbot_storage_messages_lambda_assume_role" {
   statement {
     principals {
@@ -118,6 +140,11 @@ resource "aws_iam_role_policy_attachment" "chatbot_storage_messages_lambda_role_
 resource "aws_iam_role_policy_attachment" "chatbot_storage_messages_lambda_role_dynamodb_policy_attachment" {
   role       = aws_iam_role.chatbot_storage_messages_lambda_role.id
   policy_arn = aws_iam_policy.chatbot_storage_messages_lambda_dynamodb_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "chatbot_storage_messages_lambda_role_sqs_policy_attachment" {
+  role       = aws_iam_role.chatbot_storage_messages_lambda_role.id
+  policy_arn = aws_iam_policy.chatbot_storage_messages_lambda_sqs_policy.arn
 }
 
 resource "aws_lambda_function" "chatbot_storage_messages_lambda" {
