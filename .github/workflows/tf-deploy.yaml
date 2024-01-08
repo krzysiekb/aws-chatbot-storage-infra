@@ -19,7 +19,7 @@ jobs:
 
       - name: Build store-message lambda
         run: |
-          make go-build && zip
+          make go-build
 
       - name: Archive store-message lambda
         uses: actions/upload-artifact@v3
