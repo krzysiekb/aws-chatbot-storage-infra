@@ -147,14 +147,17 @@ resource "aws_iam_role_policy_attachment" "chatbot_storage_messages_lambda_role_
   policy_arn = aws_iam_policy.chatbot_storage_messages_lambda_sqs_policy.arn
 }
 
+data "aws_ecr_repository" "chatbot_storage_messages_ecr_repo" {
+  name ="${var.chatbot_storage_messages_ecr_repo}/${var.chatbot_storage_messages_image_name}:${var.chatbot_storage_messages_image_version}"
+}
+
 resource "aws_lambda_function" "chatbot_storage_messages_lambda" {
   function_name = "ChtobotStorageMessagesLambda"
   description = "Lambda function to handle storage of messages"
   role = aws_iam_role.chatbot_storage_messages_lambda_role.arn
   
-  runtime = "go1.x"
-  handler = "main"
-  filename = var.store_message_lambda_zip_file
+  package_type = "Image"
+  image_uri = data.aws_ecr_repository.chatbot_storage_messages_ecr_repo.repository_url
 }
 
 resource "aws_lambda_event_source_mapping" "chatbot_storage_messages_lambda_event_source" {

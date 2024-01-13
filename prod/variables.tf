@@ -3,7 +3,7 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "store_message_lambda_zip_file" {
+variable "chatbot_storage_messages_ecr_repo" {
   type = string
-  default = "lambda/store-message/build/store-message.zip"
+  default = "745368277267.dkr.ecr.us-east-1.amazonaws.com/store-message:0.0.1"
 }

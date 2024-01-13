@@ -12,20 +12,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.21
-
-      - name: Build store-message lambda
+      - name: Set image version
         run: |
-          make go-build
+          echo "AWS_ECR_IMAGE_REPO=745368277267.dkr.ecr.us-east-1.amazonaws.com" >> "$GITHUB_ENV" 
+          echo "IMAGE_NAME=store-message" >> "$GITHUB_ENV" 
+          echo "IMAGE_VERSION=0.0.2" >> "$GITHUB_ENV" 
 
-      - name: Archive store-message lambda
-        uses: actions/upload-artifact@v3
-        with:
-          name: store-message-lambda
-          path: lambda/store-message/build/main.zip
+      # - name: Setup Go
+      #   uses: actions/setup-go@v4
+      #   with:
+      #     go-version: 1.21
+
+      - name: Build store-message lambda docker image
+        run: |
+          make docker-build
+      
+      - name: Push store-message lambda docker image to ECR
+        run: |
+          make docker-push
+
+      # - name: Archive store-message lambda
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: store-message-lambda
+      #     path: lambda/store-message/build/main.zip
 
   deploy-chatbot-storage:
     needs: build-lambda
@@ -36,11 +46,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download store-message lambda artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: store-message-lambda
-          path: prod
+      - name: Set image version
+        run: |
+          echo "AWS_ECR_IMAGE_REPO=745368277267.dkr.ecr.us-east-1.amazonaws.com" >> "$GITHUB_ENV" 
+          echo "IMAGE_NAME=store-message" >> "$GITHUB_ENV" 
+          echo "IMAGE_VERSION=0.0.2" >> "$GITHUB_ENV" 
+
+      # - name: Download store-message lambda artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: store-message-lambda
+      #     path: prod
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -63,7 +79,10 @@ jobs:
           terraform plan
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_store_message_lambda_zip_file: main.zip
+          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ vars.AWS_ECR_IMAGE_REPO }}
+          TF_VAR_chatbot_storage_messages_image_name: ${{ vars.IMAGE_NAME }}
+          TF_VAR_chatbot_storage_messages_image_version: ${{ vars.IMAGE_VERSION }}
+          # TF_VAR_store_message_lambda_zip_file: main.zip
       
       - name: Terraform Apply
         working-directory: ./prod
@@ -71,4 +90,7 @@ jobs:
           terraform apply -auto-approve
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_store_message_lambda_zip_file: main.zip
+          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ vars.AWS_ECR_IMAGE_REPO }}
+          TF_VAR_chatbot_storage_messages_image_name: ${{ vars.IMAGE_NAME }}
+          TF_VAR_chatbot_storage_messages_image_version: ${{ vars.IMAGE_VERSION }}
+          # TF_VAR_store_message_lambda_zip_file: main.zip

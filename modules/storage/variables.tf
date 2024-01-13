@@ -38,9 +38,19 @@ variable "queue_redrive_policy_max_receive_count" {
     description = "Max number of times a message can be received"
 }
 
-variable "store_message_lambda_zip_file" {
+variable "chatbot_storage_messages_ecr_repo" {
     type = string
-    description = "Path to the zip file containing the lambda function"
+    description = "ECR repository with image of the lambda function"
+}
+
+variable "chatbot_storage_messages_image_name" {
+    type = string
+    description = "Image used for the lambda function"
+}
+
+variable "chatbot_storage_messages_image_version" {
+    type = string
+    description = "Image version used for the lambda function"
 }
 
 variable "tags" {

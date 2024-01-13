@@ -39,7 +39,7 @@ module "chatbot_storage" {
   queue_message_retention_seconds = 604800
   queue_receive_message_wait_time_seconds = 10
   queue_redrive_policy_max_receive_count = 3
-  store_message_lambda_zip_file = var.store_message_lambda_zip_file
+  chatbot_storage_messages_ecr_repo = var.chatbot_storage_messages_ecr_repo
   
   tags = {
     "environment" = "prod"
