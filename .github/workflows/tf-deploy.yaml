@@ -18,6 +18,12 @@ jobs:
           echo "IMAGE_NAME=store-message" >> "$GITHUB_ENV" 
           echo "IMAGE_VERSION=0.0.2" >> "$GITHUB_ENV" 
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+
       # - name: Setup Go
       #   uses: actions/setup-go@v4
       #   with:
