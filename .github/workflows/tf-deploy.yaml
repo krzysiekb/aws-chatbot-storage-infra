@@ -30,6 +30,7 @@ jobs:
       - name: Login to ECR
         uses: jwalton/gh-ecr-login@v1
         with:
+          name: ${{ env.AWS_ECR_IMAGE_REPO }}
           region: ${{ vars.AWS_REGION }}
 
       # - name: Setup Go
@@ -93,9 +94,9 @@ jobs:
           terraform plan
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ vars.AWS_ECR_IMAGE_REPO }}
-          TF_VAR_chatbot_storage_messages_image_name: ${{ vars.IMAGE_NAME }}
-          TF_VAR_chatbot_storage_messages_image_version: ${{ vars.IMAGE_VERSION }}
+          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ env.AWS_ECR_IMAGE_REPO }}
+          TF_VAR_chatbot_storage_messages_image_name: ${{ env.IMAGE_NAME }}
+          TF_VAR_chatbot_storage_messages_image_version: ${{ env.IMAGE_VERSION }}
           # TF_VAR_store_message_lambda_zip_file: main.zip
       
       - name: Terraform Apply
@@ -104,7 +105,7 @@ jobs:
           terraform apply -auto-approve
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ vars.AWS_ECR_IMAGE_REPO }}
-          TF_VAR_chatbot_storage_messages_image_name: ${{ vars.IMAGE_NAME }}
-          TF_VAR_chatbot_storage_messages_image_version: ${{ vars.IMAGE_VERSION }}
+          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ env.AWS_ECR_IMAGE_REPO }}
+          TF_VAR_chatbot_storage_messages_image_name: ${{ env.IMAGE_NAME }}
+          TF_VAR_chatbot_storage_messages_image_version: ${{ env.IMAGE_VERSION }}
           # TF_VAR_store_message_lambda_zip_file: main.zip
