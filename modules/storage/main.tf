@@ -148,7 +148,7 @@ resource "aws_iam_role_policy_attachment" "chatbot_storage_messages_lambda_role_
 }
 
 data "aws_ecr_repository" "chatbot_storage_messages_ecr_repo" {
-  name ="${var.chatbot_storage_messages_ecr_repo}/${var.chatbot_storage_messages_image_name}:${var.chatbot_storage_messages_image_version}"
+  name ="${var.chatbot_storage_messages_ecr_repo}/${var.chatbot_storage_messages_image_name}"
 }
 
 resource "aws_lambda_function" "chatbot_storage_messages_lambda" {
@@ -157,7 +157,7 @@ resource "aws_lambda_function" "chatbot_storage_messages_lambda" {
   role = aws_iam_role.chatbot_storage_messages_lambda_role.arn
   
   package_type = "Image"
-  image_uri = data.aws_ecr_repository.chatbot_storage_messages_ecr_repo.repository_url
+  image_uri = "${data.aws_ecr_repository.chatbot_storage_messages_ecr_repo.repository_url}:${var.chatbot_storage_messages_image_version}"
 }
 
 resource "aws_lambda_event_source_mapping" "chatbot_storage_messages_lambda_event_source" {
