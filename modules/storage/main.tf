@@ -148,7 +148,7 @@ resource "aws_iam_role_policy_attachment" "chatbot_storage_messages_lambda_role_
 }
 
 data "aws_ecr_repository" "chatbot_storage_messages_ecr_repo" {
-  name ="${var.chatbot_storage_messages_ecr_repo}/${var.chatbot_storage_messages_image_name}"
+  name ="${var.chatbot_storage_messages_image_name}"
 }
 
 resource "aws_lambda_function" "chatbot_storage_messages_lambda" {
