@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "chatbot_storage_messages_ecr_repo" {
   type = string
-  default = "745368277267.dkr.ecr.us-east-1.amazonaws.com/store-message:0.0.1"
+  default = "745368277267.dkr.ecr.us-east-1.amazonaws.com"
 }
 
 variable "chatbot_storage_messages_image_name" {
