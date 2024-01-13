@@ -24,6 +24,11 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Login to ECR
+        uses: jwalton/gh-ecr-login@v1
+        with:
+          region: ${{ vars.AWS_REGION }}
+
       # - name: Setup Go
       #   uses: actions/setup-go@v4
       #   with:
