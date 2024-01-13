@@ -40,6 +40,8 @@ module "chatbot_storage" {
   queue_receive_message_wait_time_seconds = 10
   queue_redrive_policy_max_receive_count = 3
   chatbot_storage_messages_ecr_repo = var.chatbot_storage_messages_ecr_repo
+  chatbot_storage_messages_image_name = var.chatbot_storage_messages_image_name
+  chatbot_storage_messages_image_version = var.chatbot_storage_messages_image_version
   
   tags = {
     "environment" = "prod"
