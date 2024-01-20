@@ -28,10 +28,16 @@ resource "aws_dynamodb_table" "chatbot_storage_messages_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "ChatId"
+  hash_key       = "chatId"
+  range_key      = "messageId"
 
   attribute {
-    name = "ChatId"
+    name = "chatId"
+    type = "S"
+  }
+
+  attribute {
+    name = "messageId"
     type = "S"
   }
 
