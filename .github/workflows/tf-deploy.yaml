@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Set image version
         run: |
-          echo "IMAGE_VERSION=0.0.1" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_VERSION=0.0.1" | tee -a $GITHUB_ENV $GITHUB_OUTPUT
 
   build-lambda:
     needs: set-versions
