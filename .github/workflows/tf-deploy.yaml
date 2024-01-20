@@ -14,6 +14,7 @@ jobs:
       IMAGE_VERSION: ${{ steps.set-image-version.outputs.IMAGE_VERSION }}
     steps:
       - name: Set image version
+        id: set-image-version
         run: |
           echo "IMAGE_VERSION=0.0.1" | tee -a $GITHUB_ENV $GITHUB_OUTPUT
 
