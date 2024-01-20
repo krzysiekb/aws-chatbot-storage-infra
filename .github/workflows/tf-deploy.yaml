@@ -5,9 +5,20 @@ on: [push]
 env:
   TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
+  IMAGE_NAME_STORE_MESSAGE: "store-message"
 
 jobs:
+  set-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_VERSION: ${{ steps.set-image-version.outputs.IMAGE_VERSION }}
+    steps:
+      - name: Set image version
+        run: |
+          echo "IMAGE_VERSION=0.0.1" >> "$GITHUB_OUTPUT"
+
   build-lambda:
+    needs: set-versions
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -15,22 +26,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set image version
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Test lambda
         run: |
-          echo "AWS_ECR_IMAGE_REPO=745368277267.dkr.ecr.us-east-1.amazonaws.com" >> "$GITHUB_ENV" 
-          echo "IMAGE_NAME=store-message" >> "$GITHUB_ENV" 
-          echo "IMAGE_VERSION=0.0.2" >> "$GITHUB_ENV" 
+          cd lambda/store-message && go test
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.AWS_REGION }}
-
-      # - name: Setup Go
-      #   uses: actions/setup-go@v4
-      #   with:
-      #     go-version: 1.21
 
       - name: Build store-message lambda docker image
         run: |
@@ -40,32 +49,16 @@ jobs:
         run: |
           make docker-push
 
-      # - name: Archive store-message lambda
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: store-message-lambda
-      #     path: lambda/store-message/build/main.zip
-
   deploy-chatbot-storage:
-    needs: build-lambda
+    needs:
+      - set-versions 
+      - build-lambda
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set image version
-        run: |
-          echo "AWS_ECR_IMAGE_REPO=745368277267.dkr.ecr.us-east-1.amazonaws.com" >> "$GITHUB_ENV" 
-          echo "IMAGE_NAME=store-message" >> "$GITHUB_ENV" 
-          echo "IMAGE_VERSION=0.0.2" >> "$GITHUB_ENV" 
-
-      # - name: Download store-message lambda artifact
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: store-message-lambda
-      #     path: prod
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -88,10 +81,9 @@ jobs:
           terraform plan
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ env.AWS_ECR_IMAGE_REPO }}
-          TF_VAR_chatbot_storage_messages_image_name: ${{ env.IMAGE_NAME }}
-          TF_VAR_chatbot_storage_messages_image_version: ${{ env.IMAGE_VERSION }}
-          # TF_VAR_store_message_lambda_zip_file: main.zip
+          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ vars.AWS_ECR_IMAGE_REPO }}
+          TF_VAR_chatbot_storage_messages_image_name: ${{ env.IMAGE_NAME_STORE_MESSAGE }}
+          TF_VAR_chatbot_storage_messages_image_version: ${{ needs.set-versions.outputs.IMAGE_VERSION }}
       
       - name: Terraform Apply
         working-directory: ./prod
@@ -99,7 +91,6 @@ jobs:
           terraform apply -auto-approve
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
-          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ env.AWS_ECR_IMAGE_REPO }}
-          TF_VAR_chatbot_storage_messages_image_name: ${{ env.IMAGE_NAME }}
-          TF_VAR_chatbot_storage_messages_image_version: ${{ env.IMAGE_VERSION }}
-          # TF_VAR_store_message_lambda_zip_file: main.zip
+          TF_VAR_chatbot_storage_messages_ecr_repo: ${{ vars.AWS_ECR_IMAGE_REPO }}
+          TF_VAR_chatbot_storage_messages_image_name: ${{ env.IMAGE_NAME_STORE_MESSAGE }}
+          TF_VAR_chatbot_storage_messages_image_version: ${{ needs.set-versions.outputs.IMAGE_VERSION }}
