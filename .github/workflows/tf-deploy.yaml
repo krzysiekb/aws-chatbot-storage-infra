@@ -44,14 +44,20 @@ jobs:
       - name: Build store-message lambda docker image
         run: |
           make docker-build
+        env:
+          AWS_ECR_IMAGE_REPO: "${{ vars.AWS_ECR_IMAGE_REPO }}"
+          IMAGE_VERSION: "${{ needs.set-versions.outputs.IMAGE_VERSION }}"
       
       - name: Push store-message lambda docker image to ECR
         run: |
           make docker-push
+        env:
+          AWS_ECR_IMAGE_REPO: "${{ vars.AWS_ECR_IMAGE_REPO }}"
+          IMAGE_VERSION: "${{ needs.set-versions.outputs.IMAGE_VERSION }}"
 
   deploy-chatbot-storage:
     needs:
-      - set-versions 
+      - set-versions
       - build-lambda
     runs-on: ubuntu-latest
     permissions:
